@@ -230,7 +230,7 @@ class Logger{
                int padding = (m_width - (int)valStr.length()) / 2;
                std::cout << border << repeat(" ", padding) << valStr << repeat(" ",padding) << border << "\n";
            } else {
-               std::string left = " " + key + repeat(" ", std::max(20-(int)key.length(), 0)) + ": ";
+               std::string left = " " + key + repeat(" ", std::max(30-(int)key.length(), 0)) + ": ";
                if ((int)valStr.length() + (int)left.length() < m_width - 2) {
                    int padding = m_width - (int)left.length() - (int)valStr.length();
                    std::cout << border << left << valStr << repeat(" ", padding) << border << "\n";
