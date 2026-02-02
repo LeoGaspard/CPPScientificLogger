@@ -83,6 +83,13 @@ class Logger{
             formatAndPrint(key, oss.str(), borders);
         }
 
+        void printParam(const std::string& key, const unsigned int& value, bool borders=true) {
+            if (m_verbosity < 1) return;
+            std::ostringstream oss; 
+            oss << value;
+            formatAndPrint(key, oss.str(), borders);
+        }
+
         void printParam(const std::string& key, double value, int decimals=2, bool borders=true) {
             if (m_verbosity < 1) return;
             std::ostringstream oss;
