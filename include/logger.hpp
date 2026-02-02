@@ -185,6 +185,9 @@ class Logger{
             std::cout << "┘\n";
         }
 
+        void set_verbosity(int verbosity){
+            m_verbosity = verbosity;
+        }
     private:
        int m_width=80;
        int m_verbosity;
