@@ -46,12 +46,13 @@ class Logger{
 
         void printTitleBar(const std::string& title) {
             if (m_verbosity < 1) return;
+            int right_offset = ((int)title.size() % 2 == 0) ? 0 : 1;
             std::string inner = "┨ " + title + " ┠";
             int side_len = (m_width - inner.length() + 4 ) / 2;
 
             std::cout << " " << repeat(" ", side_len) << "┏" << repeat("━", inner.length() - 6) << "┓" << repeat(" ", side_len) << " " << "\n";
-            std::cout << "┌" << repeat("─", side_len) << inner << repeat("─",side_len+1) << "┐" << "\n";
-            std::cout << "│" << repeat(" ", side_len) << "┗" << repeat("━", inner.length() - 6) << "┛" << repeat(" ", side_len+1) << "│" << "\n";
+            std::cout << "┌" << repeat("─", side_len) << inner << repeat("─",side_len+right_offset) << "┐" << "\n";
+            std::cout << "│" << repeat(" ", side_len) << "┗" << repeat("━", inner.length() - 6) << "┛" << repeat(" ", side_len+right_offset) << "│" << "\n";
         }
 
         void printSection(const std::string& label) {
