@@ -118,6 +118,10 @@ class Logger{
             formatAndPrint(key, oss.str(), borders);
         }
 
+        void warn(const std::string& warning) {
+            std::cout << "Warning : " << warning << "\n";
+        }
+
 #ifdef HAS_ARMADILLO 
         void printParam(const std::string& key, arma::mat M, int decimals=2, bool borders=true) {
             if (m_verbosity < 1) return;
