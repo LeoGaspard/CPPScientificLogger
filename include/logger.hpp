@@ -21,19 +21,33 @@ struct Col {
 
 class Logger{
     public:
+        Logger() {
+            m_verbosity = 1;
+            m_width = 80;
+        }
+        Logger(int verbosity) {
+            m_verbosity = verbosity;
+            m_width = 80;
+        }
+        Logger(int verbosity, int width) {
+            m_verbosity = verbosity;
+            m_width = width;
+        }
         void printHeader(const std::string& text) {
+            if (m_verbosity < 1) return;
             std::string top = "╭" + repeat("─", text.length() + 2) + "╮";
             std::string mid = "│ " + text + " │";
             std::string bot = "╰" + repeat("─", text.length() + 2) + "╯";
 
-            std::cout << std::string((WIDTH - text.length()) / 2 , ' ') << top << "\n";
-            std::cout << std::string((WIDTH - text.length()) / 2 , ' ') << mid << "\n";
-            std::cout << std::string((WIDTH - text.length()) / 2 , ' ') << bot << "\n";
+            std::cout << std::string((m_width - text.length()) / 2 , ' ') << top << "\n";
+            std::cout << std::string((m_width - text.length()) / 2 , ' ') << mid << "\n";
+            std::cout << std::string((m_width - text.length()) / 2 , ' ') << bot << "\n";
         }
 
         void printTitleBar(const std::string& title) {
+            if (m_verbosity < 1) return;
             std::string inner = "┨ " + title + " ┠";
-            int side_len = (WIDTH - inner.length() + 4 ) / 2;
+            int side_len = (m_width - inner.length() + 4 ) / 2;
 
             std::cout << " " << repeat(" ", side_len) << "┏" << repeat("━", inner.length() - 6) << "┓" << repeat(" ", side_len) << " " << "\n";
             std::cout << "┌" << repeat("─", side_len) << inner << repeat("─",side_len+1) << "┐" << "\n";
@@ -41,30 +55,36 @@ class Logger{
         }
 
         void printSection(const std::string& label) {
-            std::cout << "│ ╭" << repeat("─", label.length() + 2) << "╮" << repeat(" ", WIDTH - label.length() - 5) << "│\n";
-            std::cout << "│ │ " << label << " │" << repeat(" ",WIDTH - label.length() - 5) << "│\n";
-            std::cout << "│ ╰" << repeat("─", label.length() + 2) << "╯" << repeat(" ", WIDTH - label.length() - 5) << "│\n";
+            if (m_verbosity < 1) return;
+            std::cout << "│ ╭" << repeat("─", label.length() + 2) << "╮" << repeat(" ", m_width - label.length() - 5) << "│\n";
+            std::cout << "│ │ " << label << " │" << repeat(" ",m_width - label.length() - 5) << "│\n";
+            std::cout << "│ ╰" << repeat("─", label.length() + 2) << "╯" << repeat(" ", m_width - label.length() - 5) << "│\n";
         }
 
         void printClosing() {
-            std::cout << "└" << repeat("─", WIDTH) << "┘" << std::endl;
+            if (m_verbosity < 1) return;
+            std::cout << "└" << repeat("─", m_width) << "┘" << std::endl;
         }
 
         void printParam(const std::string& key, const std::string& value, bool borders=true) {
+            if (m_verbosity < 1) return;
             formatAndPrint(key, value, borders);
         }
 
         void printParam(const std::string& key, bool value, bool borders=true) {
+            if (m_verbosity < 1) return;
             formatAndPrint(key, value ? "true" : "false", borders);
         }
 
         void printParam(const std::string& key, const int& value, bool borders=true) {
+            if (m_verbosity < 1) return;
             std::ostringstream oss; 
             oss << value;
             formatAndPrint(key, oss.str(), borders);
         }
 
         void printParam(const std::string& key, double value, int decimals=2, bool borders=true) {
+            if (m_verbosity < 1) return;
             std::ostringstream oss;
             oss << std::showpos << std::fixed << std::setprecision(decimals) << value;
             formatAndPrint(key, oss.str(), borders);
@@ -72,6 +92,7 @@ class Logger{
 
         template <typename T>
         void printParam(const std::string& key, std::complex<T> value, int decimals=2, bool borders=true) {
+            if (m_verbosity < 1) return;
             std::ostringstream oss;
             oss << std::showpos << std::fixed << std::setprecision(decimals) << value.real() << value.imag() << "i";
             formatAndPrint(key, oss.str(), borders);
@@ -79,6 +100,7 @@ class Logger{
 
 #ifdef HAS_ARMADILLO 
         void printParam(const std::string& key, arma::mat M, int decimals=2, bool borders=true) {
+            if (m_verbosity < 1) return;
             std::string dims = "[" + std::to_string(M.n_rows) + "x" + std::to_string(M.n_cols) + "]";
             formatAndPrint(key, dims, borders);
             for (arma::uword i=0; i<M.n_rows; ++i) {
@@ -96,6 +118,7 @@ class Logger{
         }
 
         void printParam(const std::string& key, arma::rowvec V, int decimals=2, bool borders=true) {
+            if (m_verbosity < 1) return;
             std::ostringstream oss;
             oss << "[";
             for (arma::uword i=0; i<V.n_cols; ++i) {
@@ -107,6 +130,7 @@ class Logger{
         }
 
         void printParam(const std::string& key, arma::colvec V, int decimals=2, bool borders=true) {
+            if (m_verbosity < 1) return;
             std::ostringstream oss;
             oss << "[";
             for (arma::uword i=0; i<V.n_rows; ++i) {
@@ -124,6 +148,7 @@ class Logger{
 
         template <typename... Args>
         void printTableHeader(Args... args) {
+            if (m_verbosity < 1) return;
             if (sizeof...(args) != table_specs.size()) return;
 
             std::cout << "┌";
@@ -146,10 +171,12 @@ class Logger{
 
         template <typename... Args> 
         void logRow(Args... args) {
+            if (m_verbosity < 1) return;
             printCells(0, args...);
         }
 
         void closeTable(){
+            if (m_verbosity < 1) return;
             std::cout << "└";
             for (size_t i=0; i<table_specs.size(); ++i) {
                 std::cout << repeat("─", table_specs[i].width);
@@ -159,7 +186,8 @@ class Logger{
         }
 
     private:
-       static constexpr int WIDTH=80;
+       int m_width=80;
+       int m_verbosity;
 
        std::vector<Col> table_specs;
 
@@ -177,17 +205,17 @@ class Logger{
            std::string border = borders ? "│" : ""; 
 
            if (key.empty()) {
-               int padding = (WIDTH - (int)valStr.length()) / 2;
+               int padding = (m_width - (int)valStr.length()) / 2;
                std::cout << border << repeat(" ", padding) << valStr << repeat(" ",padding) << border << "\n";
            } else {
                std::string left = " " + key + repeat(" ", std::max(20-(int)key.length(), 0)) + ": ";
-               if ((int)valStr.length() + (int)left.length() < WIDTH - 2) {
-                   int padding = WIDTH - (int)left.length() - (int)valStr.length();
+               if ((int)valStr.length() + (int)left.length() < m_width - 2) {
+                   int padding = m_width - (int)left.length() - (int)valStr.length();
                    std::cout << border << left << valStr << repeat(" ", padding) << border << "\n";
                } else {
-                   int padding = WIDTH - (int)left.length();
+                   int padding = m_width - (int)left.length();
                    std::cout << border << left << repeat(" ", padding) << border << "\n";
-                   padding = WIDTH - (int)valStr.length();
+                   padding = m_width - (int)valStr.length();
                    std::cout << border << valStr << repeat(" ", padding) << border << "\n";
                }
            }
