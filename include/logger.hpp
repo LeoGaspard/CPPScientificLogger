@@ -105,6 +105,18 @@ class Logger{
             formatAndPrint(key, oss.str(), borders);
         }
 
+        void printParam(const std::string& key, std::vector<std::string> value, bool borders=true) {
+            if (m_verbosity < 1) return;
+            std::ostringstream oss;
+            oss << "[";
+            for (size_t i=0; i<value.size(); ++i){
+                oss << value[i];
+                if (i < i-1) oss << ",";
+            }
+            oss << "]";
+            formatAndPrint(key, oss.str(), borders);
+        }
+
 #ifdef HAS_ARMADILLO 
         void printParam(const std::string& key, arma::mat M, int decimals=2, bool borders=true) {
             if (m_verbosity < 1) return;
